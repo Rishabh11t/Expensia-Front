@@ -1,0 +1,44 @@
+import React from 'react';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from 'recharts';
+
+
+function IncomeExpenseChart({data}) {
+
+  const safeData = Array.isArray(data) ? data : [];
+  return (
+    <div style={{ width: '100%', height: 400 }}>
+      {
+        safeData.length > 0 ? (
+          <ResponsiveContainer width={"100%"} height={300}>
+            <LineChart data={safeData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" textAnchor="end" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line strokeWidth={3} type="monotone" dataKey="income" stroke="#4CAF50" activeDot={{ r: 8 }} />
+              <Line strokeWidth={3} type="monotone" dataKey="expense" stroke="#F44336" />
+            </LineChart>
+          </ResponsiveContainer>
+        )
+          :
+          (
+            <p style={{ textAlign: 'center', marginTop: 150 }}>No data to display</p>
+          )
+      }
+
+    </div>
+
+  );
+}
+
+export default IncomeExpenseChart;
