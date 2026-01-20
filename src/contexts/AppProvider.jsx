@@ -2,6 +2,7 @@ import React, { createContext, useEffect, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { API_BASE_URL } from '../config/api';
 
 const AppContext = createContext();
 
@@ -37,7 +38,7 @@ function AppProvider({ children }) {
     // ---------- Auth ----------
     const register = async (formData) => {
         try {
-            const { data } = await axios.post('/api/auth/register', formData);
+            const { data } = await axios.post(`${API_BASE_URL}/api/auth/register`, formData);
             setUser(data);
             toast.success('Registered successfully');
             navigate('/');
@@ -48,7 +49,7 @@ function AppProvider({ children }) {
 
     const login = async (formData) => {
         try {
-            const { data } = await axios.post('/api/auth/login', formData);
+            const { data } = await axios.post(`${API_BASE_URL}/api/auth/login`, formData);
             setUser(data);
             toast.success('Logged in successfully');
             navigate('/');
@@ -59,7 +60,7 @@ function AppProvider({ children }) {
 
     const logout = async () => {
         try {
-            const { data } = await axios.post('/api/auth/logout');
+            const { data } = await axios.post(`${API_BASE_URL}/api/auth/logout`);
             setUser(null);
             toast.success(data?.message);
             navigate('/login');
@@ -70,7 +71,7 @@ function AppProvider({ children }) {
 
     const loadUser = async () => {
         try {
-            const res = await axios.get('/api/auth/me');
+            const res = await axios.get(`${API_BASE_URL}/api/auth/me`);
             setUser(res.data);
             navigate('/');
         } catch {
@@ -82,7 +83,7 @@ function AppProvider({ children }) {
     // ---------- Transactions ----------
     const addTransaction = async (transaction) => {
         try {
-            await axios.post('/api/transactions', transaction);
+            await axios.post(`${API_BASE_URL}/api/transactions`, transaction);
             await fetchMonthlySummary();
             await getTransactions();
             toast.success('Transaction added');
@@ -93,7 +94,7 @@ function AppProvider({ children }) {
 
     const getTransactions = async () => {
         try {
-            const { data } = await axios.get('/api/transactions');
+            const { data } = await axios.get(`${API_BASE_URL}/api/transactions`);
             setTransactions(data);
         } catch {
             return [];
@@ -103,7 +104,7 @@ function AppProvider({ children }) {
 
     const deleteTransaction = async (id) => {
         try {
-            await axios.delete(`/api/transactions/${id}`);
+            await axios.delete(`${API_BASE_URL}/api/transactions/${id}`);
             toast.success('Transaction deleted');
         } catch {
             toast.error('Delete transaction failed');
@@ -115,7 +116,7 @@ function AppProvider({ children }) {
             const now = new Date();
             const year = now.getFullYear();
             const month = now.getMonth() + 1;
-            const { data } = await axios.get(`/api/transactions/summary/${year}/${month}`);
+            const { data } = await axios.get(`${API_BASE_URL}/api/transactions/summary/${year}/${month}`);
             setStatistic(data);
         } catch (error) {
             return null;
@@ -124,7 +125,7 @@ function AppProvider({ children }) {
 
     const fetchSummary = async () => {
         try {
-            const { data } = await axios.get('/api/transactions/monthly-summary');
+            const { data } = await axios.get(`${API_BASE_URL}/api/transactions/monthly-summary`);
             setYearData(data);
         } catch {
             return null;
@@ -134,7 +135,7 @@ function AppProvider({ children }) {
     // ---------- Budgets ----------
     const addBudget = async (budget) => {
         try {
-            await axios.post('/api/budgets', budget);
+            await axios.post(`${API_BASE_URL}/api/budgets`, budget);
             toast.success('Budget added');
         } catch {
             toast.error('Add budget failed');
@@ -143,7 +144,7 @@ function AppProvider({ children }) {
 
     const getBudgets = async () => {
         try {
-            const { data } = await axios.get('/api/budgets');
+            const { data } = await axios.get(`${API_BASE_URL}/api/budgets`);
             setBudgets(data || []);
 
             if (data) {
@@ -159,7 +160,7 @@ function AppProvider({ children }) {
 
     const updateBudget = async (id, updates) => {
         try {
-            await axios.put(`/api/budgets/${id}`, updates);
+            await axios.put(`${API_BASE_URL}/api/budgets/${id}`, updates);
             await getBudgets();
             toast.success('Budget updated');
         } catch {
@@ -169,7 +170,7 @@ function AppProvider({ children }) {
 
     const deleteBudget = async (id) => {
         try {
-            await axios.delete(`/api/budgets/${id}`);
+            await axios.delete(`${API_BASE_URL}/api/budgets/${id}`);
             await getBudgets();
             toast.success('Budget deleted');
         } catch {
@@ -179,7 +180,7 @@ function AppProvider({ children }) {
 
     const getBudgetUsage = async () => {
         try {
-            const { data } = await axios.get('/api/budgets/status');
+            const { data } = await axios.get(`${API_BASE_URL}/api/budgets/status`);
             setBudgetUsage(data);
         } catch {
             return null;
